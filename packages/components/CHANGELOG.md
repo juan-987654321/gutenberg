@@ -24,6 +24,7 @@
 
 -   `FormTokenField`, `ComboboxControl`: Add `__next40pxDefaultSize` prop to opt into the new 40px default size, superseding the `__next36pxDefaultSize` prop ([#50261](https://github.com/WordPress/gutenberg/pull/50261)).
 -   `Modal`: Add css class to children container ([#50099](https://github.com/WordPress/gutenberg/pull/50099)).
+-   `ColorPalette`: Improve readability of color name and value ([#50450](https://github.com/WordPress/gutenberg/pull/50450)).
 -   `PaletteEdit`: Allow custom popover configuration ([#49975](https://github.com/WordPress/gutenberg/pull/49975)).
 
 ## 23.9.0 (2023-04-26)
