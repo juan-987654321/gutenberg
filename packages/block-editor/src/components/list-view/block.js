@@ -22,6 +22,7 @@ import {
 } from '@wordpress/element';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { sprintf, __ } from '@wordpress/i18n';
+import { focus } from '@wordpress/dom';
 
 /**
  * Internal dependencies
@@ -131,6 +132,7 @@ function ListViewBlock( {
 		collapse,
 		BlockSettingsMenu,
 		listViewInstanceId,
+		treeGridElementRef,
 	} = useListViewContext();
 
 	const hasSiblings = siblingBlockCount > 0;
@@ -173,9 +175,34 @@ function ListViewBlock( {
 
 	const updateSelection = useCallback(
 		( newClientId ) => {
-			selectBlock( undefined, newClientId );
+			selectBlock( undefined, newClientId, null, null );
+
+			const getFocusElement = () => {
+				const row = treeGridElementRef.current?.querySelector(
+					`[role=row][data-block="${ newClientId }"]`
+				);
+				if ( ! row ) return null;
+				// Focus the first focusable in the row, which is the ListViewBlockSelectButton.
+				return focus.focusable.find( row )[ 0 ];
+			};
+
+			let focusElement = getFocusElement();
+			if ( focusElement ) {
+				focusElement.focus();
+			} else {
+				// The element hasn't been painted yet. Defer focusing on the next frame.
+				// This could happen when all blocks have been deleted and the default block
+				// hasn't been added to the editor yet.
+				window.requestAnimationFrame( () => {
+					focusElement = getFocusElement();
+					// Ignore if the element still doesn't exist.
+					if ( focusElement ) {
+						focusElement.focus();
+					}
+				} );
+			}
 		},
-		[ selectBlock ]
+		[ selectBlock, treeGridElementRef ]
 	);
 
 	const toggleExpanded = useCallback(
@@ -272,6 +299,7 @@ function ListViewBlock( {
 							selectedClientIds={ selectedClientIds }
 							ariaLabel={ blockAriaLabel }
 							ariaDescribedBy={ descriptionId }
+							updateSelection={ updateSelection }
 						/>
 						<div
 							className="block-editor-list-view-block-select-button__description"
