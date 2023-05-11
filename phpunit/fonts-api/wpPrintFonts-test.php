@@ -125,12 +125,17 @@ class Tests_Fonts_WpPrintFonts extends WP_Fonts_TestCase {
 	}
 
 	/**
-	 * @dataProvider data_should_print_all_registered_fonts_for_iframed_editor
+	 * @dataProvider data_should_print_all_registered_fonts_for_site_editor
 	 *
 	 * @param string $fonts    Fonts to register.
 	 * @param array  $expected Expected results.
 	 */
-	public function test_should_print_all_registered_fonts_for_iframed_editor( $fonts, $expected ) {
+	public function test_should_print_all_registered_fonts_for_site_editor( $fonts, $expected ) {
+		// Set up the Site Editor.
+		global $pagenow;
+		$pagenow = 'site-editor.php';
+		set_current_screen( 'site-editor' );
+
 		wp_register_fonts( $fonts );
 
 		$this->expectOutputString( $expected['output'] );
@@ -143,7 +148,7 @@ class Tests_Fonts_WpPrintFonts extends WP_Fonts_TestCase {
 	 *
 	 * @return array
 	 */
-	public function data_should_print_all_registered_fonts_for_iframed_editor() {
+	public function data_should_print_all_registered_fonts_for_site_editor() {
 		$local_fonts = $this->get_registered_local_fonts();
 		$font_faces  = $this->get_registered_fonts_css();
 
@@ -153,7 +158,7 @@ class Tests_Fonts_WpPrintFonts extends WP_Fonts_TestCase {
 				'expected' => array(
 					'done'   => array( 'merriweather', 'merriweather-200-900-normal' ),
 					'output' => sprintf(
-						"<style id='wp-fonts-local' type='text/css'>\n%s\n</style>\n",
+						"<style id='wp-fonts-local'>\n%s\n</style>\n",
 						$font_faces['merriweather-200-900-normal']
 					),
 				),
@@ -163,7 +168,7 @@ class Tests_Fonts_WpPrintFonts extends WP_Fonts_TestCase {
 				'expected' => array(
 					'done'   => array( 'source-serif-pro', 'Source Serif Pro-300-normal', 'Source Serif Pro-900-italic' ),
 					'output' => sprintf(
-						"<style id='wp-fonts-local' type='text/css'>\n%s%s\n</style>\n",
+						"<style id='wp-fonts-local'>\n%s%s\n</style>\n",
 						$font_faces['Source Serif Pro-300-normal'],
 						$font_faces['Source Serif Pro-900-italic']
 					),
@@ -180,7 +185,7 @@ class Tests_Fonts_WpPrintFonts extends WP_Fonts_TestCase {
 						'Source Serif Pro-900-italic',
 					),
 					'output' => sprintf(
-						"<style id='wp-fonts-local' type='text/css'>\n%s%s%s\n</style>\n",
+						"<style id='wp-fonts-local'>\n%s%s%s\n</style>\n",
 						$font_faces['merriweather-200-900-normal'],
 						$font_faces['Source Serif Pro-300-normal'],
 						$font_faces['Source Serif Pro-900-italic']
