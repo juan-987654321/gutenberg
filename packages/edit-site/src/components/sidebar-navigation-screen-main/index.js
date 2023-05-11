@@ -69,7 +69,7 @@ export default function SidebarNavigationScreenMain() {
 					{ hasGlobalStyleVariations && (
 						<NavigatorButton
 							as={ SidebarNavigationItem }
-							path="/wp_global_styles"
+							path="/styles"
 							withChevron
 							icon={ styles }
 						>
