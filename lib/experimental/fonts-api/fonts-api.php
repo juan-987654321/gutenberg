@@ -189,9 +189,12 @@ if ( ! function_exists( 'wp_print_fonts' ) ) {
 	 *                        An empty array if none were processed.
 	 */
 	function wp_print_fonts( $handles = false ) {
+		global $pagenow;
+
 		$wp_fonts          = wp_fonts();
 		$registered        = $wp_fonts->get_registered_font_families();
 		$in_iframed_editor = true === $handles;
+		$is_site_editor    = $in_iframed_editor && 'site-editor.php' === $pagenow;
 
 		// Nothing to print, as no fonts are registered.
 		if ( empty( $registered ) ) {
@@ -200,13 +203,16 @@ if ( ! function_exists( 'wp_print_fonts' ) ) {
 
 		// Skip this reassignment decision-making when using the default of `false`.
 		if ( false !== $handles ) {
-			// When `true`, print all registered fonts for the iframed editor.
 			if ( $in_iframed_editor ) {
-				$queue           = $wp_fonts->queue;
-				$done            = $wp_fonts->done;
-				$wp_fonts->done  = array();
-				$wp_fonts->queue = $registered;
-				$handles         = false;
+				$handles = false;
+
+				// Use all registered fonts for the Site Editor.
+				if ( $is_site_editor ) {
+					$queue           = $wp_fonts->queue;
+					$done            = $wp_fonts->done;
+					$wp_fonts->done  = array();
+					$wp_fonts->queue = $registered;
+				}
 			} elseif ( empty( $handles ) ) {
 				// When falsey, assign `false` to print enqueued fonts.
 				$handles = false;
@@ -217,8 +223,8 @@ if ( ! function_exists( 'wp_print_fonts' ) ) {
 
 		$printed = $wp_fonts->do_items( $handles );
 
-		// Reset the API.
-		if ( $in_iframed_editor ) {
+		// Restore the API state.
+		if ( $is_site_editor ) {
 			$wp_fonts->done  = $done;
 			$wp_fonts->queue = $queue;
 		}
