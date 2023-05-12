@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+### Breaking Change
+
+-   Remove `afterSetup` option from `.wp-env.json` and the `WP_ENV_AFTER_SETUP` environment variable in favor of more granular lifecycle scripts.
+
+### New feature
+
+-   Add `afterStart`, `afterClean`, and `beforeDestroy` lifecycle scripts to a new `lifecycleScripts` key in `.wp-env.json`.
+-   Add a series of `WP_ENV_LIFECYCLE_SCRIPT_` environment variables for the various lifecycle scripts.
+
 ## 7.0.0 (2023-05-10)
 
 ### Breaking Change
