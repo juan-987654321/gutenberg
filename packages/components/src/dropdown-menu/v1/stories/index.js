@@ -2,7 +2,7 @@
  * Internal dependencies
  */
 import DropdownMenu from '../';
-import { MenuGroup, MenuItem } from '../../';
+import { MenuGroup, MenuItem } from '../../../';
 
 /**
  * WordPress dependencies
